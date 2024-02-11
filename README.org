@@ -1,0 +1,13 @@
+* MAMP substitute
+This small docker-compose setup creates a replacement for an old MAMP (Apache MySQL PHP for Mac) install that I've been migrating across multiple MBAs/MBPs for at least a decade, I think.
+
+Yes, I'm aware these are old PHP and MySQL versions, creating this setup is intended to get this particular (only running locally) web application away from that, in a controlled environment.
+* The containers:
+** =db=
+Running MySQL. The setup here is that the =/var/lib/mysql= folder is shared with the host system (=db/data/=), in an attempt to make it easy/easier to recreate the container without losing that data. Also the =/docker-entrypoint-initdb.d= folder is shared with the host system (=db/init/=) so that we can easily reinitialize the DB in case of compatibility issues (like downgrading the server version).
+** =web=
+Running Apache + PHP. This is set up such that =/var/www/html= is a folder shared with the host system (=web/data/=). The =web/Dockerfile= is mostly there to ensure some PHP extensions are installed and enabled and some PHP settings are set as needed for this web application.
+** =pma=
+Running =phpMyAdmin=, mostly to see if I could and because my MAMP install also provided that. It's set up to only allow the =db= instance and is logged in by default.
+* The =Makefile=
+Because I'm a command-line type of person at heart, I also threw in a =Makefile= so that I can start and stop the containers, check the logs, states of the containers, state of the processes, connect to the database with regular mysql client, and create backups of all the tables in the main database.
